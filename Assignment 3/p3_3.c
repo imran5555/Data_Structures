@@ -70,9 +70,14 @@ int delete_after(node *prev)             //for deleting a node after a given nod
 		return 0;
 	}
 }
-void print_l(node *head)       //for printing the listint the same order
+void print_l(node *head)       //for printing the list in the same order
 {
 	node *cur=head;
+	if(head==NULL)
+	{
+		printf("MEMORY ERROR!!!\n");
+		return;
+	}
 	printf("The list is:\n");
 	while(cur!=NULL)
 	{
@@ -80,7 +85,7 @@ void print_l(node *head)       //for printing the listint the same order
 		cur=cur->next;
 	}
 }
-node *unordered_search(node **head,int key)
+node *unordered_search(node **head,int key)   //searching for a key in an unordered list
 {
 	node *temp;
 	if((*head)==NULL) return (*head);
@@ -107,7 +112,7 @@ node *unordered_search(node **head,int key)
 		return 0;
 	}
 }
-node *ordered_search(node **head,int key)
+node *ordered_search(node **head,int key)  //searching for a key in an ordered list
 {
 	node *temp;
 	int tmp;
@@ -140,7 +145,7 @@ node *ordered_search(node **head,int key)
 		}
 	}
 }
-int size_l(node *head)
+int size_l(node *head)  //finding th size of the list
 {
 	int l=0;
 	node *temp=head;
@@ -155,7 +160,7 @@ int size_l(node *head)
 		return l;
 	}
 }
-int list_cmp(node *head1,node *head2)
+int list_cmp(node *head1,node *head2)   //comparing two lists
 {
 	if(head1==NULL && head2== NULL)
 		return 1;
@@ -175,7 +180,7 @@ int list_cmp(node *head1,node *head2)
 	}
 	else return 0;			 
 }
-int revprint_l(node *head)
+int revprint_l(node *head)    //reverse printing a list
 {
 	if(head->next==NULL)
 	{
@@ -189,13 +194,13 @@ int revprint_l(node *head)
 		return 0;
 	}
 }
-void append_l(node **head1,node *head2)
+void append_l(node **head1,node *head2)    //appending a list at the end of another
 {
 	node *temp=*head1;
 	while(temp->next!=NULL) temp=temp->next;
 	temp->next=head2;
 }
-int swap(node **head)
+/*int swap(node **head)         //not working
 {
 	if((*head)==NULL || (*head)->next==NULL) return 0;
 	node *temp1=(*head),*temp2=(*head)->next;
@@ -207,18 +212,79 @@ int swap(node **head)
 			return 0;	
 	}
 	int i=0;
-	while(temp1->next!=NULL || temp1!=NULL)
+	while(temp1->next!=NULL && temp1!=NULL)
 	{
-		node *cur=temp2->next;
+		node *cur=NULL;
+		cur=temp2->next;
 		temp2->next=temp1;
 		temp1->next=cur;
+		temp1=temp1->next;
 		if(i==0){
 			*head=temp2;i++;
 		}
-		temp1=temp1->next;
 		temp2=temp1->next;
 	}
 	return 0;
+}*/
+void delete_list(node **head)    //deleting the list
+{
+	node *temp=(*head);
+	while((*head)!=NULL)
+	{
+		(*head)=(*head)->next;
+		temp=(*head);
+		free(temp);
+	}
+}
+node *rem_duplicates_unordered(node *head)   //removing duplicates in an unordered list
+{
+	int size=size_l(head),i,j;
+	int a[size];
+	node *temp=head;
+	for(i=0;i<size;i++)
+		a[i]=0;
+	a[0]=head->data;
+	i=0;
+	while(temp->next!=NULL)
+	{
+		int k=0;
+		for(j=0;j<=i;j++)
+		{
+			if((temp->next)->data==a[j])
+			{
+				node *cur=temp->next;
+				temp->next=cur->next;
+				free(cur);
+				k=1;
+				break;
+			}
+		}
+		if(k==0)
+		{
+			a[++i]=(temp->next)->data;
+			temp=temp->next;
+		}
+	}
+	return head;
+}
+node *reverseList2(node *after)			//for reversing the list using iteration method
+{
+	if(after==NULL || after->next==NULL) return after;
+	node *prev=after,*p=NULL;
+	after=after->next;
+	prev->next=NULL;
+	p=after;
+	after=after->next;
+	while(after->next!=NULL)
+	{
+		p->next=prev;
+		prev=p;
+		p=after;
+		after=after->next;
+	}
+	p->next=prev;
+	after->next=p;
+	return after;
 }
 node* insert(int i)
 {
@@ -243,7 +309,11 @@ int main()
 //	ordered_search(&head,5);
 //	print_l(head);
 //	printf("The size of the list is %d\n",size_l(head));
-	swap(&head);
+//	swap(&head);
+//	print_l(head);
+//	delete_list(&head);
+//	print_l(head);
+	head=rem_duplicates_unordered(head);
 	print_l(head);
 	return 0;
 }
